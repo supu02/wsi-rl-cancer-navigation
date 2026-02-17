@@ -1,1 +1,28 @@
+## 📚 Literature Context
 
+This project is grounded in recent work on reinforcement learning for weakly supervised whole-slide image (WSI) analysis.
+
+### Primary Inspiration
+
+1. RL-based WSI Navigation (RLogist-style approaches)
+• Use reinforcement learning to navigate high-resolution WSIs
+• Treat patch selection as a sequential decision-making problem
+• Optimize navigation policies under sparse rewards
+
+Relevance:
+• Directly inspired the RL-based navigation prototype
+• Motivated reward shaping experiments (sparse vs dense)
+• Guided design of evaluation metrics (success rate, return, steps)
+
+---
+
+### Broader Literature Survey
+
+During the literature review phase, additional works were studied:
+
+• MuRCL (TMI 2023): RL-driven patch selection with contrastive learning  
+• Dynamic Policy MIL (CVPR 2024): Adaptive instance selection under weak supervision  
+• Attention-based MIL (ABMIL, CLAM)  
+• Contrastive learning for pathology representation  
+
+These works informed understanding of the field but were not directly implemented in this phase.

@@ -180,15 +180,16 @@ The objective is to move toward biologically inspired, foundation-model-enhanced
 
 ## 🛠 Project Structure
 
+```
 wsi-rl-cancer-navigation/
 │
-├── configs/        # Experiment configurations
-├── docs/           # Literature notes and design rationale
-├── figures/        # Architecture and pipeline diagrams
-├── results/        # Quantitative outputs
-├── src/            # Training and evaluation modules (private/cleaned)
+├── configs/     # Experiment configurations (PPO variants, reward modes)
+├── docs/        # Literature notes and design rationale
+├── figures/     # Architecture and pipeline diagrams
+├── results/     # Quantitative outputs and evaluation tables
+├── src/         # Training and evaluation modules (cleaned/private)
 └── README.md
-
+```
 
 ⸻
 

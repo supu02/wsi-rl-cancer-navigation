@@ -131,11 +131,12 @@ Dense reward shaping significantly improved convergence stability and downstream
 
 After training navigation policies, selected patch embeddings were aggregated into slide-level representations.
 
-Pipeline:
-	1.	PPO agent selects informative patches
-	2.	Patch embeddings aggregated
-	3.	Slide-level embedding constructed
-	4.	Binary classifier trained (tumor vs normal)
+**Pipeline Overview:**
+
+- PPO agent selects informative patches  
+- Selected embeddings are aggregated  
+- Slide-level representation is constructed  
+- Binary classifier predicts tumor vs. normal  
 
 Preliminary findings indicate improved separability when using RL-selected patches compared to naïve or random aggregation.
 

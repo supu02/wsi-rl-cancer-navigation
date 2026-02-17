@@ -1,5 +1,7 @@
 ## 🧠 WSI-RL-Cancer-Navigation
 
+Developed within the MICS Laboratory (CentraleSupélec, Université Paris-Saclay) under academic supervision.
+
 PPO-based Reinforcement Learning for Whole-Slide Cancer Image Navigation (CAMELYON16)
 
 This project explores reinforcement learning (RL) for intelligent patch navigation in high-resolution whole-slide images (WSIs). Instead of processing thousands of patches uniformly, a PPO agent learns to sequentially select informative regions under sparse supervision.

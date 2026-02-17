@@ -1,16 +1,18 @@
 ## 🧠 WSI-RL-Cancer-Navigation
 
-Developed within the MICS Laboratory (CentraleSupélec, Université Paris-Saclay) under academic supervision.
+> Research project developed within the MICS Laboratory (CentraleSupélec, Université Paris-Saclay), focusing on reinforcement learning for weakly supervised digital pathology.
 
 PPO-based Reinforcement Learning for Whole-Slide Cancer Image Navigation (CAMELYON16)
 
 This project explores reinforcement learning (RL) for intelligent patch navigation in high-resolution whole-slide images (WSIs). Instead of processing thousands of patches uniformly, a PPO agent learns to sequentially select informative regions under sparse supervision.
 
 The objective is to evaluate whether learned navigation policies can:
-	•	Improve patch efficiency
-	•	Increase downstream classification quality
-	•	Provide interpretable decision dynamics
-	•	Scale toward foundation-model embeddings and biologically inspired exploration
+
+- Improve patch-selection efficiency  
+- Enhance downstream slide-level classification performance  
+- Provide interpretable sequential decision dynamics  
+- Scale toward foundation-model embeddings and biologically inspired exploration strategies
+  
 
 ## 🚧 Research Roadmap
 
@@ -32,9 +34,10 @@ The objective is to evaluate whether learned navigation policies can:
 CAMELYON16 – Whole-slide lymph node metastasis detection benchmark.
 
 Slides are:
-	•	Tiled into non-overlapping patches
-	•	Tissue-filtered via Otsu thresholding
-	•	Embedded using frozen vision encoders
+
+- Tiled into non-overlapping patches  
+- Tissue-filtered via Otsu thresholding  
+- Embedded using frozen vision encoders
 
 
 ## 🧬 Data Pipeline
@@ -45,12 +48,13 @@ Whole-slide images are processed through tiling, tissue filtering, and frozen fo
 
 *Figure 1: WSI preprocessing pipeline. Slides are tiled, filtered via Otsu thresholding, and embedded using a frozen DINOv2 encoder (ViT-S/14).*
 
-Pipeline stages:
-	1.	Raw WSI input
-	2.	Patch tiling (non-overlapping)
-	3.	Tissue filtering (Otsu thresholding)
-	4.	Feature extraction (frozen ViT-S/14 encoder)
-	5.	Slide represented as a bag of 384-dim embeddings
+Whole-slide images are processed through the following stages:
+		
+	1. Raw WSI ingestion (CAMELYON16)
+	2. Non-overlapping patch tiling
+	3. Tissue region filtering (Otsu thresholding)
+	4. Feature extraction using frozen DINOv2 (ViT-S/14)
+	5. Slide represented as a bag of 384-dimensional embeddings
 
 
 ## 🧠 Reinforcement Learning Formulation
@@ -141,42 +145,47 @@ This extends the project from navigation-only to an end-to-end clinical task eva
 ## 📚 Literature Context
 
 This work is grounded in recent advances in:
-	•	Reinforcement learning for WSI navigation
-	•	Multi-instance learning (MIL)
-	•	Contrastive learning for pathology
-	•	Adaptive patch selection under weak supervision
 
-Primary Inspiration
-	•	RL-style WSI navigation formulations (sequential patch selection)
-	•	Reward shaping strategies under sparse signals
+- Reinforcement learning for WSI navigation  
+- Multi-instance learning (MIL)  
+- Contrastive learning for pathology  
+- Adaptive patch selection under weak supervision  
 
-Additional Literature Surveyed
-	•	MuRCL (TMI 2023): RL-driven discriminative set selection with contrastive learning
-	•	Dynamic Policy-Driven Adaptive MIL (CVPR 2024): Adaptive patch selection
-	•	Attention-based MIL frameworks (CLAM, ABMIL)
-	•	Contrastive pathology representation learning
+### Primary Inspiration
+
+- RL-style WSI navigation formulations (sequential patch selection)  
+- Reward shaping strategies under sparse supervision  
+
+### Additional Literature Surveyed
+
+- MuRCL (TMI 2023): RL-driven discriminative set selection with contrastive learning  
+- Dynamic Policy-Driven Adaptive MIL (CVPR 2024): Adaptive patch selection  
+- Attention-based MIL frameworks (CLAM, ABMIL)  
+- Contrastive pathology representation learning  
 
 These works informed design decisions but were not directly implemented in the current version.
 
+---
 
 ## 🔭 Research Roadmap
 
-Planned extensions:
-	•	Patch tiling with Trident
-	•	Foundation embeddings using UNI2-H / Virchow-2 (HuggingFace)
-	•	Swarm intelligence for cooperative patch exploration
-	•	Foveated vision for adaptive zoom navigation
+Planned research extensions:
+
+- Patch tiling with Trident
+- Foundation embeddings using UNI2-H / Virchow-2 (HuggingFace)
+- Swarm intelligence for cooperative patch exploration
+- Foveated vision for adaptive zoom navigation
 
 The objective is to move toward biologically inspired, foundation-model-enhanced navigation strategies.
 
-
 ## 🧠 What This Project Demonstrates
-	•	Reinforcement learning in high-dimensional visual environments
-	•	Reward shaping under sparse supervision
-	•	Sequential patch selection in WSI analysis
-	•	Strict evaluation protocol design
-	•	Research-to-prototype translation
-	•	End-to-end navigation + classification integration
+
+- Reinforcement learning in high-dimensional visual environments  
+- Reward shaping under sparse supervision  
+- Sequential patch selection in WSI analysis  
+- Strict evaluation protocol design  
+- Research-to-prototype translation  
+- End-to-end navigation + classification integration
 
 
 ## 🛠 Project Structure
@@ -201,11 +210,9 @@ Due to dataset licensing and ongoing research collaboration, training scripts an
 
 Actively evolving research prototype.
 
-Current focus:
-	•	Embedding upgrades
-	•	Navigation robustness
-	•	Downstream classification validation
-	•	Multi-agent exploration strategies
+**Current focus:**
 
-⸻
-
+- Embedding upgrades  
+- Navigation robustness  
+- Downstream classification validation  
+- Multi-agent exploration strategies  

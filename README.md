@@ -1,169 +1,212 @@
-🧠 WSI-RL-Cancer-Navigation
+## 🧠 WSI-RL-Cancer-Navigation
 
-PPO-based reinforcement learning for whole-slide cancer image navigation (CAMELYON16)
-Exploring reward shaping, representation learning, and biologically-inspired search strategies for tumor localization.
+PPO-based Reinforcement Learning for Whole-Slide Cancer Image Navigation (CAMELYON16)
 
-⸻
+This project explores reinforcement learning (RL) for intelligent patch navigation in high-resolution whole-slide images (WSIs). Instead of processing thousands of patches uniformly, a PPO agent learns to sequentially select informative regions under sparse supervision.
 
-🔬 Overview
-
-Whole-slide images (WSIs) in digital pathology are extremely high-dimensional and sparse in signal. Exhaustively scanning them is computationally expensive and biologically unrealistic.
-
-This project investigates whether reinforcement learning can:
-	•	Efficiently navigate large histopathology slides
-	•	Identify tumor-relevant regions
-	•	Improve sample efficiency under sparse supervision
-	•	Learn biologically meaningful exploration strategies
-
-The core approach uses Proximal Policy Optimization (PPO) to train an agent to navigate CAMELYON16 slides under different reward regimes.
+The objective is to evaluate whether learned navigation policies can:
+	•	Improve patch efficiency
+	•	Increase downstream classification quality
+	•	Provide interpretable decision dynamics
+	•	Scale toward foundation-model embeddings and biologically inspired exploration
 
 ⸻
 
-📂 Dataset
-	•	CAMELYON16 (Whole-Slide Histopathology)
-	•	Binary objective: tumor vs non-tumor regions
-	•	Patch-based interaction environment
+## 🏥 Dataset
 
-Due to dataset licensing, raw data is not included.
+CAMELYON16 – Whole-slide lymph node metastasis detection benchmark.
 
-⸻
-
-🏗 Methodology
-
-1️⃣ RL Navigation Framework
-	•	Custom WSI navigation environment
-	•	Agent observes image patches
-	•	Discrete movement actions across slide grid
-	•	Episode terminates on success or max steps
-
-2️⃣ Reward Modes
-
-Two reward settings were implemented and compared:
-	•	Sparse reward: reward only when tumor region is reached
-	•	Dense reward: intermediate shaping rewards
-
-Strict evaluation metrics were used to avoid reward leakage.
+Slides are:
+	•	Tiled into non-overlapping patches
+	•	Tissue-filtered via Otsu thresholding
+	•	Embedded using frozen vision encoders
 
 ⸻
 
-📊 Evaluation Metrics
+## 🧬 Data Pipeline
 
-The following are logged per training batch:
-	•	Average episode return
-	•	Success rate
-	•	Episode length
-	•	PPO loss components:
-	•	Policy loss
-	•	Critic/value loss
-	•	Entropy term
+Whole-slide images are processed through tiling, tissue filtering, and frozen foundation model embedding extraction.
 
-Smoothed training curves are available in /figures.
+![Data Pipeline](figures/data_pipeline.png)
 
-Sparse Reward Example
-	•	Gradual increase in episode return
-	•	Stabilization of PPO losses
-	•	Success rate convergence around ~0.4–0.5
+*Figure 1: WSI preprocessing pipeline. Slides are tiled, filtered via Otsu thresholding, and embedded using a frozen DINOv2 encoder (ViT-S/14).*
 
-## 🧪 Evaluation on CAMELYON16 (Test Slides)
-
-We evaluate three settings:
-
-- Baseline sparse reward
-- Synthetic prototype reward shaping
-- Final dense reward formulation
-
-### 📊 Quantitative Results
-
-Note: Training curves may show intermediate learning signals; the table reports strict test-time evaluation on held-out slides.
-
-| Experiment | Success Rate | Mean Return | Mean Steps |
-|------------|-------------|------------|------------|
-| Baseline (Sparse) | 0.0% | -97.7 | 997.0 |
-| Prototype (Synthetic) | 82.0% | 0.65 | 4.2 |
-| Dense Reward (Final) | **95.0%** | **5.40** | **120.5** |
-
-These results demonstrate that reward shaping is essential for stable policy learning in large-scale histopathology navigation tasks.
-
-(Extended training currently ongoing.)
-
-### Key Observations
-
-- Sparse reward fails to provide sufficient learning signal (0% success).
-- Synthetic shaping dramatically improves learning stability.
-- Final dense reward achieves 95% success while maintaining controlled episode length.
+Pipeline stages:
+	1.	Raw WSI input
+	2.	Patch tiling (non-overlapping)
+	3.	Tissue filtering (Otsu thresholding)
+	4.	Feature extraction (frozen ViT-S/14 encoder)
+	5.	Slide represented as a bag of 384-dim embeddings
 
 ⸻
 
-🧬 Binary Classification Head
+---
 
-After navigation stabilizes, a binary classifier head is attached to predict:
+## 🧠 Reinforcement Learning Formulation
 
-Cancer vs Non-Cancer
+Patch navigation is formulated as a sequential decision-making problem.
 
-This enables:
-	•	Joint representation learning
-	•	Evaluation of predictive signal beyond navigation success
-	•	Comparison with classical supervised pipelines
+- **State:** Pooled slide embeddings (aggregated patch features)
+- **Action:** Select next patch index (discrete)
+- **Reward:** Sparse or shaped reward based on tumor detection signal
+- **Objective:** Maximize successful tumor localization while minimizing navigation steps
 
-⸻
+---
 
-🧩 Ongoing & Planned Extensions
+## 🧩 PPO Agent Architecture
 
-🔹 Trident-based Patch Tiling
+Navigation policy is trained using Proximal Policy Optimization (PPO) with an actor–critic structure.
 
-Separate branch integrates Trident for structured patch extraction and improved slide coverage.
+![PPO Architecture](figures/ppo_architecture.png)
 
-🔹 UNI2-h (Virchow-2) Backbone
+*Figure 2: PPO agent with shared MLP backbone and actor–critic heads for discrete patch-index selection.*
 
-Experiments with pretrained foundation vision models to improve feature representations before PPO training.
+Architecture details:
 
-🔹 Swarm Intelligence
-
-Multi-agent exploration strategy:
-	•	Cooperative region discovery
-	•	Coverage optimization
-	•	Reduced redundant exploration
-
-🔹 Foveated Vision Strategy
-
-Biologically-inspired selective attention:
-	•	Coarse global scan
-	•	Fine-grained zoom-in near suspicious regions
-	•	Adaptive patch resolution
+- Shared MLP (2 layers, 256 units)
+- Actor head: categorical policy over discrete patch indices
+- Critic head: scalar value function V(s)
+- Discrete action space over patch indices
 
 ⸻
 
-🛠 Tech Stack
-	•	Python
-	•	PyTorch
-	•	TorchRL
-	•	PPO
-	•	Matplotlib
-	•	Custom Gym-style environment
+## 🧪 Phase 1 — Toy RL Prototype (Paper-Inspired)
+
+Before scaling to full-resolution CAMELYON16 slides, a simplified RL prototype was implemented to validate the navigation formulation under controlled synthetic conditions.
+
+This phase validated:
+
+- Navigation feasibility  
+- Reward shaping behavior  
+- PPO convergence stability  
+
+### Prototype Results
+
+| Metric        | Value  |
+|--------------|--------|
+| Success Rate | 82.0%  |
+| Mean Return  | 0.65   |
+| Mean Steps   | 4.2    |
+
+The prototype achieved rapid convergence and demonstrated that reward shaping substantially improved navigation efficiency.  
+This confirmed that reinforcement learning could meaningfully optimize patch navigation before full-resolution deployment.
 
 ⸻
 
-⚠️ Research Status
+## 📊 Quantitative Results — CAMELYON16
 
-This is an active research project.
+### Sparse Reward (Baseline)
 
-Current state:
-	•	Stable PPO baseline implemented
-	•	Sparse vs dense reward comparison complete
-	•	Extended training in progress
-	•	Binary classifier integrated
-	•	Representation experiments underway
+| Metric                  | Final Value |
+|--------------------------|------------|
+| Average Episode Return | -2.3       |
+| Success Rate            | 0.43       |
+| Training Batches        | 200        |
 
-Codebase is being refactored before full public release.
 
 ⸻
 
-🎯 Research Question
+## 🧪 Full Evaluation on Test Slides
 
-The broader objective is:
+| Experiment            | Success Rate | Mean Return | Mean Steps |
+|-----------------------|--------------|-------------|------------|
+| Baseline (Sparse)     | 0.0%         | -97.7       | 997.0      |
+| Prototype (Synthetic) | 82.0%        | 0.65        | 4.2        |
+| Dense Reward (Final)  | **95.0%**    | **5.40**    | **120.5**  |
 
-Can intelligent exploration strategies extract predictive phenotypic signal from whole-slide images more efficiently than static patch classification?
+Dense reward shaping significantly improved convergence stability and downstream navigation efficiency.
 
 ⸻
 
-If you are interested in collaboration or discussion, feel free to reach out.
+## 🧬 Downstream Binary Cancer Classifier
+
+After training navigation policies, selected patch embeddings were aggregated into slide-level representations.
+
+Pipeline:
+	1.	PPO agent selects informative patches
+	2.	Patch embeddings aggregated
+	3.	Slide-level embedding constructed
+	4.	Binary classifier trained (tumor vs normal)
+
+Preliminary findings indicate improved separability when using RL-selected patches compared to naïve or random aggregation.
+
+This extends the project from navigation-only to an end-to-end clinical task evaluation pipeline.
+
+⸻
+
+## 📚 Literature Context
+
+This work is grounded in recent advances in:
+	•	Reinforcement learning for WSI navigation
+	•	Multi-instance learning (MIL)
+	•	Contrastive learning for pathology
+	•	Adaptive patch selection under weak supervision
+
+Primary Inspiration
+	•	RL-style WSI navigation formulations (sequential patch selection)
+	•	Reward shaping strategies under sparse signals
+
+Additional Literature Surveyed
+	•	MuRCL (TMI 2023): RL-driven discriminative set selection with contrastive learning
+	•	Dynamic Policy-Driven Adaptive MIL (CVPR 2024): Adaptive patch selection
+	•	Attention-based MIL frameworks (CLAM, ABMIL)
+	•	Contrastive pathology representation learning
+
+These works informed design decisions but were not directly implemented in the current version.
+
+⸻
+
+## 🔭 Research Roadmap
+
+Planned extensions:
+	•	Patch tiling with Trident
+	•	Foundation embeddings using UNI2-H / Virchow-2 (HuggingFace)
+	•	Swarm intelligence for cooperative patch exploration
+	•	Foveated vision for adaptive zoom navigation
+
+The objective is to move toward biologically inspired, foundation-model-enhanced navigation strategies.
+
+⸻
+
+## 🧠 What This Project Demonstrates
+	•	Reinforcement learning in high-dimensional visual environments
+	•	Reward shaping under sparse supervision
+	•	Sequential patch selection in WSI analysis
+	•	Strict evaluation protocol design
+	•	Research-to-prototype translation
+	•	End-to-end navigation + classification integration
+
+⸻
+
+## 🛠 Project Structure
+
+wsi-rl-cancer-navigation/
+│
+├── configs/        # Experiment configurations
+├── docs/           # Literature notes and design rationale
+├── figures/        # Architecture and pipeline diagrams
+├── results/        # Quantitative outputs
+├── src/            # Training and evaluation modules (private/cleaned)
+└── README.md
+
+
+⸻
+
+## ⚠️ Reproducibility Note
+
+Due to dataset licensing and ongoing research collaboration, training scripts and raw data are not publicly released. The repository documents methodology, architecture, and quantitative findings for transparency and reproducibility at the experimental design level.
+
+⸻
+
+## 🚀 Status
+
+Actively evolving research prototype.
+
+Current focus:
+	•	Embedding upgrades
+	•	Navigation robustness
+	•	Downstream classification validation
+	•	Multi-agent exploration strategies
+
+⸻
+

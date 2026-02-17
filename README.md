@@ -10,16 +10,20 @@ The objective is to evaluate whether learned navigation policies can:
 	•	Provide interpretable decision dynamics
 	•	Scale toward foundation-model embeddings and biologically inspired exploration
 
-⸻
-## 🚧 Research Status
+## 🚧 Research Roadmap
 
-• Phase 1: Toy RL prototype (complete)
-• Phase 2: PPO navigation on CAMELYON16 (complete)
-• Phase 3: Binary classifier on navigation embeddings (complete)
-• Phase 4: Trident tiling integration (in progress)
-• Phase 5: UNI2-H / Virchow-2 foundation embeddings (planned)
-• Phase 6: Swarm + foveated exploration (planned)
-⸻
+### Completed
+- Phase 1 — Toy RL Prototype (paper-inspired validation)
+- Phase 2 — PPO Navigation on CAMELYON16
+- Phase 3 — Binary Cancer Classifier on Navigation Embeddings
+
+### In Progress
+- Phase 4 — Trident-based patch tiling pipeline
+
+### Planned Extensions
+- Phase 5 — Foundation embeddings (UNI2-H / Virchow-2)
+- Phase 6 — Swarm intelligence for cooperative exploration
+- Phase 7 — Foveated vision for adaptive zoom navigation
 
 ## 🏥 Dataset
 
@@ -30,7 +34,6 @@ Slides are:
 	•	Tissue-filtered via Otsu thresholding
 	•	Embedded using frozen vision encoders
 
-⸻
 
 ## 🧬 Data Pipeline
 
@@ -47,9 +50,6 @@ Pipeline stages:
 	4.	Feature extraction (frozen ViT-S/14 encoder)
 	5.	Slide represented as a bag of 384-dim embeddings
 
-⸻
-
----
 
 ## 🧠 Reinforcement Learning Formulation
 
@@ -60,7 +60,6 @@ Patch navigation is formulated as a sequential decision-making problem.
 - **Reward:** Sparse or shaped reward based on tumor detection signal
 - **Objective:** Maximize successful tumor localization while minimizing navigation steps
 
----
 
 ## 🧩 PPO Agent Architecture
 
@@ -77,7 +76,6 @@ Architecture details:
 - Critic head: scalar value function V(s)
 - Discrete action space over patch indices
 
-⸻
 
 ## 🧪 Phase 1 — Toy RL Prototype (Paper-Inspired)
 
@@ -100,7 +98,6 @@ This phase validated:
 The prototype achieved rapid convergence and demonstrated that reward shaping substantially improved navigation efficiency.  
 This confirmed that reinforcement learning could meaningfully optimize patch navigation before full-resolution deployment.
 
-⸻
 
 ## 📊 Quantitative Results — CAMELYON16
 
@@ -113,8 +110,6 @@ This confirmed that reinforcement learning could meaningfully optimize patch nav
 | Training Batches        | 200        |
 
 
-⸻
-
 ## 🧪 Full Evaluation on Test Slides
 
 | Experiment            | Success Rate | Mean Return | Mean Steps |
@@ -125,7 +120,6 @@ This confirmed that reinforcement learning could meaningfully optimize patch nav
 
 Dense reward shaping significantly improved convergence stability and downstream navigation efficiency.
 
-⸻
 
 ## 🧬 Downstream Binary Cancer Classifier
 
@@ -141,7 +135,6 @@ Preliminary findings indicate improved separability when using RL-selected patch
 
 This extends the project from navigation-only to an end-to-end clinical task evaluation pipeline.
 
-⸻
 
 ## 📚 Literature Context
 
@@ -163,7 +156,6 @@ Additional Literature Surveyed
 
 These works informed design decisions but were not directly implemented in the current version.
 
-⸻
 
 ## 🔭 Research Roadmap
 
@@ -175,7 +167,6 @@ Planned extensions:
 
 The objective is to move toward biologically inspired, foundation-model-enhanced navigation strategies.
 
-⸻
 
 ## 🧠 What This Project Demonstrates
 	•	Reinforcement learning in high-dimensional visual environments
@@ -185,7 +176,6 @@ The objective is to move toward biologically inspired, foundation-model-enhanced
 	•	Research-to-prototype translation
 	•	End-to-end navigation + classification integration
 
-⸻
 
 ## 🛠 Project Structure
 
@@ -200,13 +190,10 @@ wsi-rl-cancer-navigation/
 └── README.md
 ```
 
-⸻
-
 ## ⚠️ Reproducibility Note
 
 Due to dataset licensing and ongoing research collaboration, training scripts and raw data are not publicly released. The repository documents methodology, architecture, and quantitative findings for transparency and reproducibility at the experimental design level.
 
-⸻
 
 ## 🚀 Status
 

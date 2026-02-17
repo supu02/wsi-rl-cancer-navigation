@@ -11,6 +11,15 @@ The objective is to evaluate whether learned navigation policies can:
 	•	Scale toward foundation-model embeddings and biologically inspired exploration
 
 ⸻
+## 🚧 Research Status
+
+• Phase 1: Toy RL prototype (complete)
+• Phase 2: PPO navigation on CAMELYON16 (complete)
+• Phase 3: Binary classifier on navigation embeddings (complete)
+• Phase 4: Trident tiling integration (in progress)
+• Phase 5: UNI2-H / Virchow-2 foundation embeddings (planned)
+• Phase 6: Swarm + foveated exploration (planned)
+⸻
 
 ## 🏥 Dataset
 

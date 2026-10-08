@@ -51,18 +51,19 @@ The implementation is in [`RLogist/environment_rlogist.py`](RLogist/environment_
 
 The prototype's `PolicyNetwork` maps the pooled input through two fully connected layers, then produces policy logits over patch actions and a scalar value estimate. `PPOAgent` samples actions from a categorical distribution and updates the policy using clipped probability ratios, value loss, and an entropy term. During evaluation, the environment's action mask restricts selection to valid patches.
 
-The report also contains historical training visualizations:
+The report's result visualizations are shown below. These are historical report artifacts; the underlying run logs were not supplied with the source subset, so the figures have not been regenerated against the included code.
 
-| Visualization | What it shows |
+| Sparse reward: episode return | Sparse reward: success rate |
 | --- | --- |
-| [Sparse reward return](figures/sparse-episode_return.png) | Reported episode-return trend for sparse reward. |
-| [Sparse reward success](figures/training_success-sparse.png) | Reported training success trend for sparse reward. |
-| [Reward comparison](figures/average_episode-comparison.png) | Historical sparse/dense average-episode comparison. |
-| [Success comparison](figures/success_rate-comparison.png) | Historical success-rate comparison. |
-| [PPO losses](figures/ppo_losses-sparse.png) | Historical policy, value, and entropy loss visualization. |
-| [Reward shaping summary](figures/reward_shaping_comparison.png) | Figure retained from the report workspace. |
+| ![Sparse reward average episode return over training batches](figures/sparse-episode_return.png) | ![Sparse reward success rate over training batches](figures/training_success-sparse.png) |
 
-These images are preserved as report artifacts; the underlying run logs were not supplied with the source subset, so the figures have not been regenerated against the included code.
+| Sparse vs. dense: episode return | Sparse vs. dense: success rate |
+| --- | --- |
+| ![Average episode return comparison for sparse and dense rewards](figures/average_episode-comparison.png) | ![Success rate comparison for sparse and dense rewards](figures/success_rate-comparison.png) |
+
+| PPO losses: sparse reward | Reward-shaping summary |
+| --- | --- |
+| ![Smoothed PPO objective, critic, entropy, and total losses](figures/ppo_losses-sparse.png) | ![Average reward comparison for sparse and dense shaping](figures/reward_shaping_comparison.png) |
 
 ## Reported Results
 

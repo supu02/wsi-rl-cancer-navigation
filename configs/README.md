@@ -1,13 +1,5 @@
 # Experiment Configurations
 
-This folder will contain configuration files for training and evaluation experiments.
+No standalone configuration files are currently included. The PPO prototype exposes reward and evaluation options through command-line arguments; the UNI2-h extractor also takes its data paths and extraction options on the command line.
 
-Planned configs:
-- PPO hyperparameters (learning rate, gamma, clip ratio, entropy coefficient)
-- Reward mode settings (sparse vs dense shaping)
-- Patch extraction settings (tile size, stride, magnification level)
-- Binary classifier settings (cancer vs non-cancer head)
-- Trident-based tiling configuration
-- Feature extractor backbone (e.g., UNI2-h / Virchow-2)
-
-These configs are being cleaned and modularized before upload.
+The original experiment configurations contained cluster-specific absolute paths and dependencies on external SASHA checkpoints, so they are not presented here as portable configs. See `docs/experiment-scope.md` for command templates and required inputs.

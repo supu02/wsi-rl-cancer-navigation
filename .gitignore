@@ -1,0 +1,28 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.ipynb_checkpoints/
+
+# Private datasets and derived features
+Datasets/
+data/
+embeddings/
+outputs/
+logs/
+results/
+*.h5
+*.hdf5
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+
+# Local run artifacts
+RLogist/checkpoints/
+wandb/
+tensorboard/
+*.out
+*.err

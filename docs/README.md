@@ -1,13 +1,6 @@
-# Project Notes & Design Decisions
+# Project Notes
 
-This folder contains documentation related to:
+- `experiment-scope.md` describes the included 384-dimensional PPO prototype, the separate UNI2-h extraction track, data requirements, and reproduction limitations.
+- `literature_review` records background sources and approaches considered during the project.
 
-- Dataset: CAMELYON16 whole-slide images (WSI)
-- Environment design for PPO navigation
-- Reward shaping strategy (sparse vs dense)
-- Evaluation protocol (episode return, success rate, PPO losses)
-- Binary classification head integration
-- Comparison across reward modes
-- Planned extensions: swarm intelligence & foveated vision
-
-Additional notes on failure modes, debugging, and performance analysis will be added progressively.
+The training prototype, evaluation code, and UNI2-h feature extractor are now included in the repository. Downstream SASHA training stages and their checkpoints remain external dependencies.

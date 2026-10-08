@@ -1,13 +1,8 @@
-# Source Code (In Progress)
+# Source Code
 
-This folder will contain:
+Runnable source is organized at the repository root:
 
-- PPO training loop
-- Custom WSI navigation environment
-- Reward computation logic (sparse and dense)
-- Success metric computation
-- Binary classifier head for cancer prediction
-- Training + evaluation scripts
-- Plotting utilities for metrics
+- `RLogist/` contains the 384-dimensional PPO agent, Gymnasium environments, CAMELYON16 prototype trainer, and evaluator.
+- `sasha_adapted/preprocessing/step2_extract_uni2_features.py` extracts raw 1,536-dimensional UNI2-h features and is a separate pipeline stage.
 
-Code is currently being refactored to remove lab-specific paths and internal dependencies before being made public.
+The UNI2-h extractor is not connected to the PPO prototype. The external SASHA pipeline, downstream UNI2 training stages, datasets, and trained checkpoints are not included. See `docs/experiment-scope.md` before attempting reproduction.

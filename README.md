@@ -51,7 +51,66 @@ The implementation is in [`RLogist/environment_rlogist.py`](RLogist/environment_
 
 The prototype's `PolicyNetwork` maps the pooled input through two fully connected layers, then produces policy logits over patch actions and a scalar value estimate. `PPOAgent` samples actions from a categorical distribution and updates the policy using clipped probability ratios, value loss, and an entropy term. During evaluation, the environment's action mask restricts selection to valid patches.
 
-The report's result visualizations are shown below. These are historical report artifacts; the underlying run logs were not supplied with the source subset, so the figures have not been regenerated against the included code.
+## Defense Report Results
+
+The following figures and metrics are taken from the six-page defense report dated April 2026. They document the locked CAMELYON16/SASHA experiments, rather than the compact PPO prototype included in this repository. The report states that the main comparison used all available slides, `split_4`, seed 4, 50 epochs, and best-checkpoint selection, except the UNI2-h run, which used seed 4004.
+
+### Pipeline Comparison
+
+![Defense report diagram comparing the baseline SASHA and Virchow2 feature-extractor variants](figures/defense_pipeline_comparison.png)
+
+Only Step 2, the feature extractor, changed between these two pipeline variants; the report states the remaining stages, hyperparameters, seeds, and data splits were held fixed. Virchow2 features were projected from 2,560 to the 384 dimensions expected by SASHA.
+
+### Dataset Split and Evaluation Protocol
+
+![CAMELYON16 split composition and evaluation notes from the defense report](figures/defense_split_composition.png)
+
+The report records 111 training slides, 27 balanced validation slides, and 129 test slides. It explicitly notes that the test partition is all-normal, making test AUC undefined and accuracy uninformative for tumor detection; the report therefore uses validation metrics as its primary evidence. Three slides were missing from intermediate data, so 267 of 270 are accounted for in the shown split summary.
+
+### Locked Full-270 Comparison
+
+![Locked comparison diagram and validation metrics table from the defense report](figures/defense_locked_comparison.png)
+
+Reported metrics are validation-set results, not test-set results:
+
+| Model | Validation AUC | Validation F1 | Validation accuracy |
+| --- | ---: | ---: | ---: |
+| SASHA baseline RL | 1.000 | 1.000 | 100.0% |
+| SASHA + Virchow2 RL | 0.969 | 0.783 | 81.5% |
+| SASHA + Virchow2 RL, last-checkpoint sanity check | 0.963 | 0.783 | 81.5% |
+| SASHA + UNI2-h RL | 1.000 | 0.941 | 96.3% |
+| ABMIL baseline | 1.000 | 0.941 | Not reported |
+| ABMIL + Virchow2 | 1.000 | 1.000 | Not reported |
+
+The locked comparison used `full270`, seed 4, and `split_4` for the listed baseline and Virchow2 rows; the UNI2-h RL row used seed 4004. These are transcribed from the defense report and have not been rerun from the files in this repository.
+
+### Validation F1 During Training
+
+![Validation F1 over training epochs for the SASHA baseline and Virchow2 RL](figures/defense_validation_f1_training.png)
+
+The report notes that the Virchow2 agent's hard predictions remained at F1 0.783 from epoch 1, although its AUC changed as confidence scores shifted. It reports the Virchow2 AUC peaking at 0.969 around epoch 25 before declining, motivating careful checkpoint selection.
+
+### Backbone and Dataset-Size Comparison
+
+![Validation F1 by backbone and exploratory test AUC across dataset sizes](figures/defense_backbone_dataset_ablation.png)
+
+In the locked full-dataset comparison, the report shows validation F1 of 1.000 for the SASHA baseline, 0.783 for SASHA + Virchow2 RL, and 0.941 for SASHA + UNI2-h RL. The dataset-size panel is explicitly exploratory: small subsets have very few test slides and high variance, so those bars should not be treated as a robust scale comparison.
+
+### Qualitative Navigation
+
+![Patch-selection trajectories for the SASHA baseline and SASHA plus Virchow2 on tumor slide 082](figures/defense_navigation_trajectories.png)
+
+![Crop-level comparison of visited regions for the baseline and Virchow2 agents](figures/defense_tumor_region_comparison.png)
+
+For the same `tumor_082` slide, the report says both agents made 121 visits; the baseline visited 54 annotated tumor patches, while Virchow2 visited 2. Its interpretation is that the Virchow2 policy found a discriminative signal early and stopped receiving useful incentive to continue targeted tumor search. This illustrates why slide classification scores and tumor-localization behavior are different measures.
+
+### Project Timeline
+
+![Six-month project timeline from the defense report](figures/defense_project_timeline.png)
+
+## Earlier PPO Prototype Results
+
+The following curves and metrics are from the earlier PPO prototype documented in the previous repository README. They are **not the locked SASHA/Virchow2/UNI2-h defense experiments above**. Their source run logs and checkpoints are not included, so these figures are retained as historical context rather than independently verified results.
 
 | Sparse reward: episode return | Sparse reward: success rate |
 | --- | --- |
@@ -65,37 +124,15 @@ The report's result visualizations are shown below. These are historical report 
 | --- | --- |
 | ![Smoothed PPO objective, critic, entropy, and total losses](figures/ppo_losses-sparse.png) | ![Average reward comparison for sparse and dense shaping](figures/reward_shaping_comparison.png) |
 
-## Reported Results
-
-The values below are transcribed from the README that preceded this code update. They are **historical report values, not independently verified results**: the source metrics, split definitions, and checkpoints needed to reproduce them are absent from this repository. Do not compare them directly to a new run without matching the exact protocol.
-
-### Synthetic Prototype
-
-| Metric | Historically reported value |
-| --- | ---: |
-| Success rate | 82.0% |
-| Mean return | 0.65 |
-| Mean steps | 4.2 |
-
-### CAMELYON16 Summary
-
-The previous README reported the following sparse-reward training summary:
-
-| Metric | Historically reported value |
-| --- | ---: |
-| Average episode return | -2.3 |
-| Success rate | 0.43 |
-| Training batches | 200 |
-
-It also reported this test-slide comparison:
+The previous README reported the following earlier prototype values:
 
 | Experiment | Success rate | Mean return | Mean steps |
 | --- | ---: | ---: | ---: |
-| Baseline (sparse) | 0.0% | -97.7 | 997.0 |
 | Synthetic prototype | 82.0% | 0.65 | 4.2 |
-| Dense reward (reported final) | 95.0% | 5.40 | 120.5 |
+| Sparse CAMELYON16 prototype | 0.0% | -97.7 | 997.0 |
+| Dense reward prototype | 95.0% | 5.40 | 120.5 |
 
-The current included `RLogist/train_camelyon.py` is a small prototype that samples from two hard-coded slide IDs. The evaluator uses a fixed list of ten slide IDs and skips slides whose embeddings are missing. Those scripts do not by themselves establish that the historical table used the same split or settings; see [experiment scope](docs/experiment-scope.md) before attempting reproduction.
+It also listed a sparse-reward training summary of average episode return `-2.3`, success rate `0.43`, and 200 training batches. The included `RLogist/train_camelyon.py` is only a small prototype using two hard-coded slide IDs, and its evaluator uses a fixed list of ten IDs; these scripts should not be treated as the implementation of the locked defense protocol.
 
 ## UNI2-h Feature Extraction Track
 

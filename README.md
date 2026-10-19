@@ -4,6 +4,23 @@ PPO-based reinforcement learning for whole-slide image (WSI) patch navigation on
 
 The repository contains a compact 384-dimensional PPO prototype and a separate UNI2-h feature extraction script. The included UNI2 extraction stage is not connected to the PPO policy: it produces raw 1,536-dimensional features, while the current PPO environment expects 384-dimensional features. The source is explicit about that boundary; the external SASHA training stages required to bridge it are not included.
 
+## At a Glance
+
+This repository documents a research project carried out from **October 2025 to April 2026**. The research proceeded in three phases: a custom DINOv2-based WSI navigation prototype, reproduction of the six-stage SASHA pipeline, and replacement of SASHA's feature-extraction stage with Virchow2 and UNI2-h.
+
+**Central finding (April 2026 defense report):** More discriminative pathology features did not automatically improve RL navigation. On the locked CAMELYON16 validation split, SASHA + Virchow2 RL obtained **AUC 0.969 / F1 0.783**, versus **AUC 1.000 / F1 1.000** for the original SASHA RL baseline. SASHA + UNI2-h RL obtained **AUC 1.000 / F1 0.941** (different seed). These are **slide-level validation classification metrics, not tumor-hit or navigation success rates**.
+
+**What is actually runnable here:** a separate 384-D PPO navigation prototype (with externally prepared patch embeddings) and a UNI2-h feature-extraction script (with approved slide/model access). The complete reproduced SASHA Steps 3–6, original training artifacts, and checkpoints are **not in this repository**; the defense results cannot be reproduced end-to-end from this checkout.
+
+### Quick navigation
+
+| Goal | Start here | Scope |
+| --- | --- | --- |
+| Understand the research findings | [Defense report results](#defense-report-results) | Historical validation results and report figures |
+| Run the included PPO prototype | [Running the PPO Prototype](#running-the-ppo-prototype) | Separate, small-scale experiment requiring 384-D embeddings |
+| Inspect the UNI2-h extractor | [UNI2-h Feature Extraction Track](#uni2-h-feature-extraction-track) | Feature extraction only; not a complete SASHA run |
+| Check input shapes and commands | [Experiment scope and reproduction notes](docs/experiment-scope.md) | External inputs and known limitations |
+
 ## Project Goals
 
 - Formulate patch selection as a sequential decision problem.
@@ -104,6 +121,17 @@ In the locked full-dataset comparison, the report shows validation F1 of 1.000 f
 
 For the same `tumor_082` slide, the report says both agents made 121 visits; the baseline visited 54 annotated tumor patches, while Virchow2 visited 2. Its interpretation is that the Virchow2 policy found a discriminative signal early and stopped receiving useful incentive to continue targeted tumor search. This illustrates why slide classification scores and tumor-localization behavior are different measures.
 
+### Interpretation and Reward Design
+
+The defense report attributes the Virchow2 navigation gap to a **feature–reward mismatch**. SASHA rewards absolute classification confidence and propagates reward credit to neighbors above a **0.95 cosine-similarity threshold**. The report's analysis is that Virchow2's tightly clustered embeddings cause a large confidence gain early in an episode, leaving little incentive for subsequent targeted tumor exploration. This is the **report's explanation**, not a mechanism independently tested by the code included here.
+
+The report also records two important qualifications:
+
+- **ABMIL + Virchow2** achieved validation AUC **1.000** and F1 **1.000**. The issue was therefore not simply that Virchow2 features lacked classification information.
+- In an **exploratory 16-slide UNI2-h experiment**, a step-improvement reward increased **test AUC from 0.50 to 0.75**. The small test set and different experimental protocol mean this is not a full-dataset, multi-seed validation of the reward change.
+
+The locked full-dataset comparison used a **single seed per condition** (seed 4, except UNI2-h seed 4004). Exploratory runs with other seeds and splits are not directly comparable to the locked validation table.
+
 ### Project Timeline
 
 ![Six-month project timeline from the defense report](figures/defense_project_timeline.png)
@@ -162,7 +190,7 @@ python -m RLogist.train_camelyon --reward first_hit
 python -m RLogist.rl.evaluate_camelyon --reward first_hit --episodes-per-slide 20 --max-steps 100
 ```
 
-The trainer writes model checkpoints under `RLogist/checkpoints/`. The evaluator writes per-episode logs and summary metrics under `results/`. These are runtime artifacts and are excluded from Git.
+The trainer writes model checkpoints under `RLogist/checkpoints/`. The evaluator writes per-episode logs and summary metrics under `results/`. These are runtime artifacts and are excluded from Git. **Important:** the trainer uses two fixed tumor-slide IDs, and the evaluator's fixed ten-slide list includes those same IDs. Its output is a prototype diagnostic, **not an independent held-out evaluation** and not the defense report's validation protocol.
 
 ## Repository Layout
 

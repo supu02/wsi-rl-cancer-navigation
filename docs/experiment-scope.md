@@ -8,7 +8,7 @@ The `RLogist/` code expects three files per slide in `embeddings/`:
 - `<slide>_coords.npy`: an `(N, 2)` coordinate matrix
 - `<slide>_mask.npy`: a tumor mask aligned with the patches
 
-The included `train_camelyon.py` is a small prototype. It samples from two hard-coded slide IDs for 200 episodes; it is not the full report evaluation protocol. The evaluator uses a fixed list of ten slide IDs and skips any whose embedding file is absent. Treat reported metrics as comparable only when the same slide split, data preprocessing, checkpoint, and episode protocol are used.
+The included `train_camelyon.py` is a small prototype. It samples from two hard-coded slide IDs for 200 episodes; it is not the full report evaluation protocol. The evaluator uses a fixed list of ten slide IDs and skips any whose embedding file is absent. **The evaluation list overlaps the training list:** `tumor_005.tif` and `tumor_012.tif` appear in both scripts. Consequently, this evaluator is a prototype diagnostic, not a held-out generalization test. Its success-rate metric is tumor-patch hit detection and must not be confused with the defense report's slide-level validation AUC, F1, or accuracy. Treat reported metrics as comparable only when the same slide split, data preprocessing, checkpoint, and episode protocol are used.
 
 Example:
 
